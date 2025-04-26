@@ -7,6 +7,7 @@ import argparse
 import requests
 from pathlib import Path 
 from utilities import argument_check, api_requests, recursive_checker
+import urllib3
 
 gares_file = "data/gares.txt"
 
@@ -181,14 +182,17 @@ def main(args={}):
         exit()
 
     if args.propale:
-        print("Trains TGVmax disponibles depuis " + depart + " le " + date)
-        trains = api_requests.check_available_gares(
-            argument_check.formalize_gare(depart), date, hour
-        )
-        for train in trains:
-            print("Vers la gare de " + train[1])
-            print("Heure de départ : " + train[2] + " Heure d'arrivée : " + train[3])
-        exit()
+        try :
+            print("Trains TGVmax disponibles depuis " + depart + " le " + date)
+            trains = api_requests.check_available_gares(
+                argument_check.formalize_gare(depart), date, hour
+            )
+            for train in trains:
+                print("Vers la gare de " + train[1])
+                print("Heure de départ : " + train[2] + " Heure d'arrivée : " + train[3])
+            exit()
+        except api_requests.SNCFLimitReached as e:
+            print('Error raised !')
     # vérification des arguments et formalisation des gares
     argument_check.verify_argument(depart, arrivee, date, steps, gares)
     depart_req = argument_check.formalize_gare(depart)
@@ -206,6 +210,9 @@ def main(args={}):
         trajet_direct, trajet_indirect = parse_trains(available_trains, all_compatible_journey, depart, arrivee)
     except urllib3.exceptions.MaxRetryError:
         print("You've made too much request for today and SNCF has blocked you. Please retry tomorrow :'(")
+    except api_requests.SNCFLimitReached as e:
+        print(e)
+        raise(api_requests.SNCFLimitReached(e))
     return trajet_direct, trajet_indirect
 
 
