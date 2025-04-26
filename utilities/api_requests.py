@@ -6,7 +6,6 @@ class SNCFLimitReached(Exception):
 
 def parse_api_answer(answer, hour):
     try :
-        print(answer)
         answer = answer["records"]
         trains = []
         for train in answer:
@@ -35,7 +34,7 @@ def simple_request(depart, arrivee, date, hour):
         + "&refine.destination="
         + arrivee
     )
-    response = request("GET", url)
+    response = requests.get(url)
     return parse_api_answer(eval(response.data), hour)
 
 
