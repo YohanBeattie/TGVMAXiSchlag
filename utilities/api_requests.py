@@ -1,20 +1,27 @@
 from urllib3 import request, exceptions, util
 
+class SNCFLimitReached(Exception):
+    pass
+
 
 def parse_api_answer(answer, hour):
-    answer = answer["records"]
-    trains = []
-    for train in answer:
-        train = train["fields"]
-        train = [
-            train["origine"],
-            train["destination"],
-            train["heure_depart"],
-            train["heure_arrivee"],
-        ]
-        if train[2] >= hour:
-            trains.append(train)
-    return trains
+    try :
+        print(answer)
+        answer = answer["records"]
+        trains = []
+        for train in answer:
+            train = train["fields"]
+            train = [
+                train["origine"],
+                train["destination"],
+                train["heure_depart"],
+                train["heure_arrivee"],
+            ]
+            if train[2] >= hour:
+                trains.append(train)
+        return trains
+    except KeyError as e:
+        raise SNCFLimitReached("You have reached the SNCF limit of request. Please try again later")
 
 
 def simple_request(depart, arrivee, date, hour):

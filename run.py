@@ -6,6 +6,7 @@ from flask import Flask, render_template, request, redirect, url_for, jsonify
 import subprocess
 from threading import Timer
 from main import main
+from utilities import api_requests
 
 class Namespace:
     def __init__(self, **kwargs):
@@ -46,8 +47,10 @@ def search():
     nombre_etapes = 2 if nombre_etapes == '' else nombre_etapes
 
     args = Namespace(depart=gare_depart, arrivee=gare_arrivee, date=date_depart, steps=nombre_etapes, hour="00:01", force=False, list_gares=False, propale=False)
-    
-    direct_trains, indirect_trains = main(args)
+    try:
+        direct_trains, indirect_trains = main(args)
+    except api_requests.SNCFLimitReached as e:
+        return render_template('error.html', error_message=e)
 
     # Afficher le résultat sur la page web
     return render_template('result.html', resultats=[direct_trains, indirect_trains])

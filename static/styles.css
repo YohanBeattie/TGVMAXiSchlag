@@ -20,3 +20,22 @@
 
   .col-lg-6{-webkit-box-flex:0;-ms-flex:0 0 auto;flex:0 0 auto;width:50%}
   
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+.content {
+    padding: 20px;
+}
+.error-box {
+    border: 2px solid red;
+    padding: 20px;
+    border-radius: 5px;
+    background-color: #ffe6e6;
+    margin-top: 20px;
+}
+.error-box h1 {
+    color: red;
+}

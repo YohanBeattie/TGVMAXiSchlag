@@ -70,7 +70,11 @@
             </section>
         </div>
     </div>
-
+    <div id="error-section">
+        {% if error_message %}
+            {% include 'error.html' %}
+        {% endif %}
+    </div>
     
     <script>
         $(document).ready(function() {
@@ -85,6 +89,18 @@
                 success: function(response) {
                 $('#loading-spinner').hide();
                 $('#results').html(response);
+                },
+                error: function(xhr, status, error) {
+                $('#loading-spinner').hide();
+                // Insérer le contenu de la page d'erreur dans #results
+                const errorMessage = "Une erreur s'est produite lors du chargement de la page.";
+                const errorContent = `
+                    <div class="error-box">
+                        <h1>Erreur</h1>
+                        <p>${errorMessage}</p>
+                    </div>
+                `;
+                $('#results').html(errorContent);
                 }
             });
             });
