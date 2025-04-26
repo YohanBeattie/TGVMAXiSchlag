@@ -3,8 +3,6 @@
 #@version 1
 
 from flask import Flask, render_template, request, redirect, url_for, jsonify
-import subprocess
-from threading import Timer
 from main import main
 from utilities import api_requests
 

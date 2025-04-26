@@ -1,4 +1,4 @@
-from urllib3 import request, exceptions, util
+import requests
 
 class SNCFLimitReached(Exception):
     pass
@@ -49,8 +49,9 @@ def check_available_gares(depart, date, hour):
         + date
     )
     try :
-        response = request("GET", url, retries=util.Retry(10))
-    except exceptions.MaxRetryError:
+        response = requests.get(url, max_retries=7)
+        #request("GET", url, retries=util.Retry(10))
+    except requests.exceptions.RetryError:
         return []
 
     return parse_api_answer(eval(response.data), hour)

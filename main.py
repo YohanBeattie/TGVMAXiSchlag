@@ -4,10 +4,7 @@
 #@Version 3.0
 
 import argparse
-import requests
-from pathlib import Path 
 from utilities import argument_check, api_requests, recursive_checker
-import urllib3
 
 gares_file = "data/gares.txt"
 
@@ -208,8 +205,6 @@ def main(args={}):
         )
         check_indirect_trains(all_compatible_journey, steps)
         trajet_direct, trajet_indirect = parse_trains(available_trains, all_compatible_journey, depart, arrivee)
-    except urllib3.exceptions.MaxRetryError:
-        print("You've made too much request for today and SNCF has blocked you. Please retry tomorrow :'(")
     except api_requests.SNCFLimitReached as e:
         print(e)
         raise(api_requests.SNCFLimitReached(e))
